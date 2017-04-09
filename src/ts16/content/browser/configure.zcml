@@ -1,0 +1,31 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    i18n_domain="ts16.content">
+
+  <!-- Set overrides folder for Just-a-Bunch-Of-Templates product -->
+  <include package="z3c.jbot" file="meta.zcml" />
+  <browser:jbot
+      directory="overrides"
+      layer="ts16.content.interfaces.ITs16ContentLayer"
+      />
+
+  <!-- Publish static files -->
+  <plone:static
+      name="ts16.content"
+      type="plone"
+      directory="static"
+      />
+
+  <!-- browser views -->
+  <browser:page
+      name="cover_view"
+      for="ts16.content.interfaces.ICover"
+      class=".views.CoverView"
+      layer="ts16.content.interfaces.ITs16ContentLayer"
+      permission="zope2.View"
+      />
+
+
+</configure>

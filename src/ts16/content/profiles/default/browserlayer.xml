@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layers>
+  <layer
+      name="ts16.content"
+      interface="ts16.content.interfaces.ITs16ContentLayer"
+      />
+</layers>
