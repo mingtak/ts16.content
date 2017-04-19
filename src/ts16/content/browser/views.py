@@ -4,6 +4,9 @@ from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from plone import api
 from Products.CMFPlone.utils import safe_unicode
 import json
+import transaction
+from plone.protect.interfaces import IDisableCSRFProtection
+from zope.interface import alsoProvides
 import logging
 
 
@@ -17,40 +20,25 @@ class ToVote(BrowserView):
         context = self.context
         request = self.request
         portal = api.portal.get()
-
-#        import pdb; pdb.set_trace()
+        alsoProvides(request, IDisableCSRFProtection)
 
         userId = request.form.get('email', '')
-        if not userId:
-            try:
-                userId = api.user.get_current().id
-            except:
-                request.response.redirect(portal.absolute_url())
-                return
-
         if not userId:
             request.response.redirect(portal.absolute_url())
             return
 
         voteItems = request.form.get('voteItems', '')
-        if not voteItems:
-            voteItems = request.cookies.get('voteItems', '')
-
-        import pdb; pdb.set_trace()
         voteItems = voteItems.split(',')
-#        else:
-#            voteItems = request.cookies.get('itemInCart', '')
-
-
         if len(voteItems) != 3:
             request.response.redirect(portal.absolute_url())
             return
 
         vote = portal['vote']
         voteResultString = vote.description
-#        import pdb; pdb.set_trace()
+
         if voteResultString:
-            voteResult = json.loads(voteResultString)
+            voteResult = json.loads(voteResultString.split('|||')[0])
+            voteCount = json.loads(voteResultString.split('|||')[1])
         else:
             voteResult = {}
         if userId in voteResult:
@@ -59,6 +47,7 @@ class ToVote(BrowserView):
         voteResult[userId] = voteItems
         vote.description = json.dumps(voteResult)
         request.response.redirect('%s?thanks=1' % portal.absolute_url())
+        transaction.commit()
         return
 
 
