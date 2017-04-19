@@ -41,11 +41,17 @@ class ToVote(BrowserView):
             voteCount = json.loads(voteResultString.split('|||')[1])
         else:
             voteResult = {}
+            voteCount = {}
         if userId in voteResult:
             request.response.redirect('%s?voted=1' % portal.absolute_url())
             return
         voteResult[userId] = voteItems
-        vote.description = json.dumps(voteResult)
+        for uid in voteItems:
+            count = voteCount.get(uid, 0) + 1
+            voteCount[uid] = count
+
+
+        vote.description = '%s|||%s' % (json.dumps(voteResult), json.dumps(voteCount))
         request.response.redirect('%s?thanks=1' % portal.absolute_url())
         transaction.commit()
         return
@@ -58,7 +64,13 @@ class CoverView(BrowserView):
     def __call__(self):
         context = self.context
         request = self.request
-#        portal = api.portal.get()
+        portal = api.portal.get()
+
+        vote = portal['vote']
+        try:
+            self.voteCount = json.loads(vote.description.split('|||')[1])
+        except:
+            self.voteCount = {}
 
         return self.template()
 
