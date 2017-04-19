@@ -27,5 +27,12 @@
       permission="zope2.View"
       />
 
+  <browser:page
+      name="to_vote"
+      for="*"
+      class=".views.ToVote"
+      layer="ts16.content.interfaces.ITs16ContentLayer"
+      permission="zope2.View"
+      />
 
 </configure>
