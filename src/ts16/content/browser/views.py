@@ -14,6 +14,18 @@ logger = logging.getLogger('morear.content')
 LIMIT=20
 
 
+class VoteResult(BrowserView):
+
+    template = ViewPageTemplateFile("template/vote_result.pt")
+
+    def __call__(self):
+        context = self.context
+        request = self.request
+        portal = api.portal.get()
+        alsoProvides(request, IDisableCSRFProtection)
+        return self.template()
+
+
 class ToVote(BrowserView):
 
     def __call__(self):

@@ -1,0 +1,38 @@
+
+
+<?python
+from plone import api
+import json
+portal = api.portal.get()
+vote = portal['vote']
+jsonString = vote.description.split('|||')[0]
+result=json.loads(jsonString)
+?>
+
+<h1>第十五屆台新藝術獎 票選結果</h1>
+<table>
+    <tr class="head">
+        <td>編號</td>
+        <td>Email</td>
+        <td>票選作品1</td>
+        <td>票選作品2</td>
+        <td>票選作品3</td>
+    </tr>
+    <tr tal:repeat="key result" tal:attributes="class python:'odd' if repeat['key'].even else 'even'">
+        <td>${repeat/key/number}</td>
+        <td>${key}</td>
+        <td tal:define="brain python:api.content.find(UID=result[key])"
+            tal:repeat="item brain"
+            tal:content="item/Title">
+        </td>
+    </tr>
+</table>
+
+<style>
+h1 {text-align:center}
+table { margin:auto }
+td {border: solid 1px #333; padding:5px 10px}
+tr.head {background-color:#ccc}
+tr.odd {background-color:#3ea}
+tr.even {background-color:#a8b}
+</style>

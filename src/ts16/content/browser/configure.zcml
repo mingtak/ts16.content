@@ -35,4 +35,12 @@
       permission="zope2.View"
       />
 
+  <browser:page
+      name="vote_result"
+      for="*"
+      class=".views.VoteResult"
+      layer="ts16.content.interfaces.ITs16ContentLayer"
+      permission="cmf.ManagePortal"
+      />
+
 </configure>
